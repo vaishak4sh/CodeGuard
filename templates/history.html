@@ -1,75 +1,164 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>CodeGuard - Scan History</title>
+    <title>Scan History | CodeGuard</title>
 
     <style>
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        :root {
+            --background: #111412;
+            --surface: #191e1a;
+            --surface-light: #202722;
+            --border: #303a32;
+            --text: #e7ece8;
+            --muted: #9ba79e;
+            --accent: #83bd91;
+            --accent-hover: #9bcda6;
+            --red: #e47777;
+            --orange: #e6b56c;
         }
 
         body {
-            background: #0b1020;
-            color: white;
+            background: var(--background);
+            color: var(--text);
             min-height: 100vh;
+            line-height: 1.6;
         }
 
+        /* HEADER */
+
         header {
+            min-height: 72px;
+            padding: 0 7%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 22px 7%;
-            background: #11182b;
-            border-bottom: 1px solid #26314c;
+            background: #171c18;
+            border-bottom: 1px solid var(--border);
         }
 
         .logo {
-            font-size: 27px;
-            font-weight: bold;
-            color: #55d6be;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.5px;
         }
 
-        header a {
-            color: #55d6be;
-            text-decoration: none;
+        .logo span {
+            color: var(--accent);
         }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--accent);
+        }
+
+        /* MAIN */
 
         .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 50px auto;
+            width: 86%;
+            max-width: 1150px;
+            margin: 48px auto;
         }
 
-        h1 {
-            margin-bottom: 12px;
-        }
-
-        .subtitle {
-            color: #aab4ca;
+        .page-heading {
             margin-bottom: 30px;
         }
 
+        .page-heading h1 {
+            font-size: 30px;
+            margin-bottom: 9px;
+            letter-spacing: -0.5px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* SUMMARY */
+
+        .summary {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 23px 25px;
+            margin-bottom: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .summary-label {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .summary h2 {
+            font-size: 30px;
+            color: var(--accent);
+        }
+
+        .summary-note {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* HISTORY CARD */
+
         .card {
-            background: #151f35;
-            border: 1px solid #2a3857;
-            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 9px;
             padding: 25px;
         }
 
-        .total {
-            color: #55d6be;
-            font-size: 24px;
-            margin-bottom: 20px;
+        .card-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 22px;
         }
+
+        .card-heading h2 {
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .tag {
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 4px 9px;
+            font-size: 12px;
+        }
+
+        /* TABLE */
 
         .table-wrapper {
             overflow-x: auto;
@@ -81,182 +170,318 @@
             min-width: 750px;
         }
 
-        th, td {
-            padding: 16px 12px;
+        th,
+        td {
+            padding: 16px 13px;
             text-align: left;
-            border-bottom: 1px solid #2a3857;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
         }
 
         th {
-            color: #55d6be;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
         }
 
         td {
-            color: #d4dcec;
-            font-size: 14px;
+            color: #d4ded6;
+            font-size: 13px;
+        }
+
+        tbody tr:hover {
+            background: #202722;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .scan-id {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .filename {
+            max-width: 190px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .high {
-            color: #ff647c;
+            color: var(--red);
+            font-weight: 600;
         }
 
         .medium {
-            color: #ffbc55;
+            color: var(--orange);
+            font-weight: 600;
         }
 
         .low {
-            color: #55d6be;
+            color: var(--accent);
+            font-weight: 600;
         }
+
+        /* DETAILS BUTTON */
 
         .details {
-            background: #55d6be;
-            color: #091521;
-            padding: 9px 14px;
+            display: inline-block;
+            background: #29332b;
+            color: #a8d5b1;
+            border: 1px solid #465449;
+            padding: 7px 14px;
             border-radius: 5px;
             text-decoration: none;
-            font-weight: bold;
+            font-size: 12px;
+            font-weight: 600;
+            transition: background 0.2s;
         }
 
-        .empty {
-            color: #aab4ca;
-            text-align: center;
-            padding: 35px;
+        .details:hover {
+            background: #354238;
         }
+
+        /* EMPTY STATE */
+
+        .empty {
+            text-align: center;
+            padding: 55px 15px;
+        }
+
+        .empty h3 {
+            font-size: 18px;
+            margin-bottom: 9px;
+        }
+
+        .empty p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .scan-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: #142017;
+            padding: 10px 17px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .scan-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        /* BACK BUTTON */
 
         .back {
             display: inline-block;
-            margin-top: 25px;
-            color: #55d6be;
+            margin-top: 23px;
+            padding: 10px 16px;
+            background: #29332b;
+            border: 1px solid #465449;
+            color: var(--text);
+            border-radius: 5px;
             text-decoration: none;
+            font-size: 13px;
         }
+
+        .back:hover {
+            background: #354238;
+        }
+
+        /* FOOTER */
 
         footer {
+            border-top: 1px solid var(--border);
+            margin-top: 55px;
+            padding: 24px 15px;
             text-align: center;
-            padding: 30px;
-            color: #78859e;
+            color: #78847b;
+            font-size: 12px;
         }
 
-    </style>
+        /* RESPONSIVE */
 
+        @media (max-width: 700px) {
+            header {
+                padding: 18px 5%;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav {
+                gap: 17px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav a {
+                font-size: 12px;
+            }
+
+            .container {
+                width: 92%;
+                margin-top: 30px;
+            }
+
+            .page-heading h1 {
+                font-size: 25px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .summary {
+                padding: 18px;
+            }
+
+            .card-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<header>
+    <!-- HEADER -->
 
-    <div class="logo">🛡 CodeGuard</div>
+    <header>
+        <div class="logo">Code<span>Guard</span></div>
 
-    <a href="/">Home</a>
+        <nav>
+            <a href="{{ url_for('home') }}">Scanner</a>
+            <a href="{{ url_for('scan_history') }}" class="active">History</a>
+            <a href="{{ url_for('analytics') }}">Analytics</a>
+        </nav>
+    </header>
 
-</header>
+    <!-- MAIN CONTENT -->
 
+    <main class="container">
 
-<div class="container">
-
-    <h1>📚 Scan History</h1>
-
-    <p class="subtitle">
-        View your previous Python security scans.
-    </p>
-
-
-    <div class="card">
-
-        <div class="total">
-            Total Scans: {{ scans|length }}
+        <div class="page-heading">
+            <h1>Scan History</h1>
+            <p>Review your previous Python security scans and their results.</p>
         </div>
 
-        {% if scans %}
+        <!-- TOTAL SCANS -->
 
-        <div class="table-wrapper">
+        <section class="summary">
+            <div>
+                <p class="summary-label">Total Scans</p>
+                <h2>{{ scans|length }}</h2>
+                <p class="summary-note">Scans performed so far</p>
+            </div>
+        </section>
 
-            <table>
+        <!-- HISTORY TABLE -->
 
-                <thead>
+        <section class="card">
 
-                    <tr>
-                        <th>ID</th>
-                        <th>File Name</th>
-                        <th>Date</th>
-                        <th>High</th>
-                        <th>Medium</th>
-                        <th>Low</th>
-                        <th>Details</th>
-                    </tr>
+            <div class="card-heading">
+                <h2>Previous Scans</h2>
+                <span class="tag">Scan Records</span>
+            </div>
 
-                </thead>
+            {% if scans %}
 
-                <tbody>
+            <div class="table-wrapper">
 
-                    {% for scan in scans %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scan ID</th>
+                            <th>File Name</th>
+                            <th>Date & Time</th>
+                            <th>High</th>
+                            <th>Medium</th>
+                            <th>Low</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
 
-                    <tr>
+                    <tbody>
 
-                        <td>{{ scan["id"] }}</td>
+                        {% for scan in scans %}
 
-                        <td>{{ scan["filename"] }}</td>
+                        <tr>
+                            <td class="scan-id">
+                                #{{ scan["id"] }}
+                            </td>
 
-                        <td>{{ scan["scanned_at"] }}</td>
+                            <td class="filename" title="{{ scan['filename'] or 'Pasted Code' }}">
+                                {{ scan["filename"] or "Pasted Code" }}
+                            </td>
 
-                        <td class="high">
-                            {{ scan["high_count"] }}
-                        </td>
+                            <td>
+                                {{ scan["scanned_at"] }}
+                            </td>
 
-                        <td class="medium">
-                            {{ scan["medium_count"] }}
-                        </td>
+                            <td class="high">
+                                {{ scan["high_count"] }}
+                            </td>
 
-                        <td class="low">
-                            {{ scan["low_count"] }}
-                        </td>
+                            <td class="medium">
+                                {{ scan["medium_count"] }}
+                            </td>
 
-                        <td>
+                            <td class="low">
+                                {{ scan["low_count"] }}
+                            </td>
 
-                            <a
-                                class="details"
-                                href="{{ url_for('scan_details', scan_id=scan['id']) }}"
-                            >
-                                View
-                            </a>
+                            <td>
+                                <a
+                                    class="details"
+                                    href="{{ url_for('scan_details', scan_id=scan['id']) }}">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
 
-                        </td>
+                        {% endfor %}
 
-                    </tr>
+                    </tbody>
+                </table>
 
-                    {% endfor %}
+            </div>
 
-                </tbody>
+            {% else %}
 
-            </table>
+            <div class="empty">
+                <h3>No Scan History Found</h3>
 
-        </div>
+                <p>
+                    You haven't performed any security scans yet.
+                    Run your first scan to see the results here.
+                </p>
 
-        {% else %}
+                <a href="{{ url_for('home') }}" class="scan-btn">
+                    Start Scanning
+                </a>
+            </div>
 
-        <div class="empty">
+            {% endif %}
 
-            <h3>No Scan History Found</h3>
+        </section>
 
-            <p>Upload and scan a Python file to see your history here.</p>
+        <a href="{{ url_for('home') }}" class="back">
+            Back to Scanner
+        </a>
 
-        </div>
+    </main>
 
-        {% endif %}
+    <!-- FOOTER -->
 
-    </div>
-
-
-    <a href="/" class="back">← Back to Scanner</a>
-
-</div>
-
-
-<footer>
-
-    CodeGuard © 2026 | Python Code Security Analyzer
-
-</footer>
+    <footer>
+        CodeGuard © 2026 | Python Code Security Analyzer
+    </footer>
 
 </body>
-
 </html>

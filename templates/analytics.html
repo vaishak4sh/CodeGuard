@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>CodeGuard - Dashboard Analytics</title>
+    <title>Analytics | CodeGuard</title>
 
     <style>
-
         * {
             margin: 0;
             padding: 0;
@@ -18,158 +14,160 @@
         }
 
         body {
-            background: #0b1020;
-            color: white;
+            background: #111412;
+            color: #e8eee9;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
         }
 
         header {
+            background: #191e1a;
+            border-bottom: 1px solid #2a332c;
+            padding: 18px 7%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 22px 7%;
-            background: #11182b;
-            border-bottom: 1px solid #26314c;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .logo {
-            font-size: 27px;
+            font-size: 23px;
             font-weight: bold;
-            color: #55d6be;
+            color: #83bd91;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
         }
 
         nav a {
-            color: #c5cde0;
+            color: #b7c1b9;
             text-decoration: none;
-            margin-left: 22px;
             font-size: 14px;
+            transition: color 0.2s ease;
         }
 
-        nav a:hover {
-            color: #55d6be;
+        nav a:hover,
+        nav a.active {
+            color: #83bd91;
         }
 
         .container {
             width: 86%;
-            max-width: 1150px;
+            max-width: 1200px;
             margin: 45px auto;
+            flex: 1;
         }
 
-        .heading {
+        .page-heading {
             margin-bottom: 30px;
         }
 
-        .heading h1 {
-            font-size: 32px;
-            margin-bottom: 12px;
+        .page-heading h1 {
+            font-size: 29px;
+            margin-bottom: 9px;
+            line-height: 1.2;
         }
 
-        .heading p {
-            color: #aab4ca;
+        .page-heading p {
+            color: #9aa69d;
+            font-size: 14px;
         }
 
-        /* STATISTICS */
-
-        .stats {
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 18px;
             margin-bottom: 30px;
         }
 
         .stat-card {
-            background: #151f35;
-            border: 1px solid #2a3857;
-            border-radius: 12px;
-            padding: 25px;
+            background: #191e1a;
+            border: 1px solid #2a332c;
+            border-radius: 10px;
+            padding: 23px;
         }
 
         .stat-card p {
-            color: #aab4ca;
-            font-size: 14px;
-            margin-bottom: 15px;
+            color: #9aa69d;
+            font-size: 13px;
+            margin-bottom: 14px;
         }
 
         .stat-card h2 {
-            font-size: 32px;
+            font-size: 29px;
+            color: #e8eee9;
+            margin-bottom: 4px;
+            line-height: 1.2;
         }
 
-        .teal {
-            color: #55d6be;
+        .stat-card small {
+            color: #83bd91;
+            font-size: 12px;
+            display: block;
         }
 
-        .red {
-            color: #ff647c;
-        }
-
-        .orange {
-            color: #ffbc55;
-        }
-
-        .blue {
-            color: #78a9ff;
-        }
-
-        /* SECTIONS */
-
-        .section {
-            background: #151f35;
-            border: 1px solid #2a3857;
-            border-radius: 12px;
+        .section-card {
+            background: #191e1a;
+            border: 1px solid #2a332c;
+            border-radius: 10px;
             padding: 25px;
             margin-bottom: 25px;
         }
 
-        .section h2 {
+        .section-title {
+            font-size: 19px;
             margin-bottom: 22px;
-            font-size: 21px;
         }
 
-        /* SEVERITY CHART */
-
-        .chart-item {
-            margin-bottom: 25px;
+        .severity-item {
+            margin-bottom: 22px;
         }
 
-        .chart-label {
+        .severity-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .severity-info {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            color: #d4dcec;
-            font-size: 14px;
+            margin-bottom: 9px;
+            font-size: 13px;
         }
 
-        .progress {
-            height: 13px;
-            width: 100%;
-            background: #090e1b;
+        .severity-info span:last-child {
+            color: #aab5ad;
+        }
+
+        .progress-track {
+            height: 9px;
+            background: #2a332c;
             border-radius: 20px;
             overflow: hidden;
         }
 
-        .bar {
+        .progress-fill {
             height: 100%;
             border-radius: 20px;
+            transition: width 0.3s ease;
         }
 
-        .high-bar {
-            background: #ff647c;
+        .high {
+            background: #d96c6c;
         }
 
-        .medium-bar {
-            background: #ffbc55;
+        .medium {
+            background: #d6a451;
         }
 
-        .low-bar {
-            background: #55d6be;
+        .low {
+            background: #83bd91;
         }
-
-        .empty {
-            color: #aab4ca;
-            padding: 15px 0;
-        }
-
-        /* RECENT SCANS */
 
         .table-wrapper {
             overflow-x: auto;
@@ -178,385 +176,254 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 650px;
+            min-width: 600px;
         }
 
         th, td {
-            padding: 16px 12px;
+            padding: 15px 12px;
             text-align: left;
-            border-bottom: 1px solid #2a3857;
+            border-bottom: 1px solid #2a332c;
+            font-size: 13px;
         }
 
         th {
-            color: #55d6be;
-            font-size: 14px;
+            color: #9aa69d;
+            font-weight: normal;
         }
 
         td {
-            color: #d4dcec;
+            color: #dce5de;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .view-btn {
+            display: inline-block;
+            padding: 7px 13px;
+            background: #263d2d;
+            color: #a8d5b1;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .view-btn:hover {
+            background: #34543d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 35px 10px;
+            color: #9aa69d;
             font-size: 14px;
         }
 
-        .view-button {
-            display: inline-block;
-            background: #55d6be;
-            color: #091521;
-            padding: 8px 13px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
+        .empty-state p + p {
+            margin-top: 6px;
         }
 
-        .view-button:hover {
-            background: #36bba5;
+        .back-btn {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 11px 18px;
+            background: #263d2d;
+            color: #b7d9be;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.2s ease;
         }
 
-        /* NAVIGATION BUTTON */
-
-        .back-button {
-            display: inline-block;
-            background: #55d6be;
-            color: #091521;
-            padding: 12px 20px;
-            border-radius: 7px;
-            font-weight: bold;
-            text-decoration: none;
-            margin-bottom: 30px;
+        .back-btn:hover {
+            background: #34543d;
         }
 
         footer {
             text-align: center;
-            padding: 30px;
-            color: #78859e;
-            font-size: 13px;
+            padding: 25px;
+            color: #718077;
+            font-size: 12px;
+            border-top: 1px solid #252d27;
+            margin-top: 50px;
         }
 
-        @media(max-width: 700px) {
-
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
+        @media (max-width: 750px) {
             .container {
                 width: 92%;
+                margin-top: 30px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
 
             header {
-                flex-direction: column;
-                gap: 15px;
+                padding: 17px 5%;
             }
-
-            nav a {
-                margin: 0 7px;
-            }
-
         }
 
-    </style>
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
 
+            nav {
+                gap: 14px;
+            }
+
+            .page-heading h1 {
+                font-size: 24px;
+            }
+
+            .section-card {
+                padding: 18px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-
-<!-- HEADER -->
-
 <header>
-
-    <div class="logo">
-        🛡 CodeGuard
-    </div>
+    <div class="logo">CodeGuard</div>
 
     <nav>
-
-        <a href="{{ url_for('home') }}">Home</a>
-
-        <a href="{{ url_for('home') }}#scanner">Scanner</a>
-
-        <a href="{{ url_for('scan_history') }}">History</a>
-
+        <a href="{{ url_for('home') }}">Scanner</a>
+        <a href="{{ url_for('scan_history') }}">Scan History</a>
+        <a href="{{ url_for('analytics') }}" class="active">Analytics</a>
     </nav>
-
 </header>
 
+<main class="container">
 
-<div class="container">
-
-
-    <!-- PAGE HEADING -->
-
-    <div class="heading">
-
-        <h1>📊 Dashboard Analytics</h1>
-
-        <p>
-            Monitor security scans and analyze detected vulnerabilities.
-        </p>
-
+    <div class="page-heading">
+        <h1>Analytics Dashboard</h1>
+        <p>Overview of your Python security scans and detected vulnerabilities.</p>
     </div>
 
-
-    <!-- STATISTICS CARDS -->
-
-    <div class="stats">
-
-
+    <!-- Statistics -->
+    <section class="stats-grid">
         <div class="stat-card">
-
-            <p>🔍 Total Scans</p>
-
-            <h2 class="teal">
-                {{ summary["total_scans"] }}
-            </h2>
-
+            <p>Total Scans</p>
+            <h2>{{ summary["total_scans"] }}</h2>
+            <small>Scans performed</small>
         </div>
 
-
         <div class="stat-card">
-
-            <p>🛡️ Total Vulnerabilities</p>
-
-            <h2 class="red">
-                {{ summary["total_vulnerabilities"] }}
-            </h2>
-
+            <p>Total Vulnerabilities</p>
+            <h2>{{ summary["total_vulnerabilities"] }}</h2>
+            <small>Issues detected</small>
         </div>
 
-
         <div class="stat-card">
-
-            <p>📈 Average Issues Per Scan</p>
-
-            <h2 class="blue">
-                {{ "%.2f"|format(summary["average_issues"]) }}
-            </h2>
-
+            <p>Average Issues Per Scan</p>
+            <h2>{{ summary["average_issues"] }}</h2>
+            <small>Average findings</small>
         </div>
 
-
         <div class="stat-card">
-
-            <p>🔴 High Severity</p>
-
-            <h2 class="red">
-                {{ summary["high_count"] }}
-            </h2>
-
+            <p>High Severity</p>
+            <h2>{{ summary["high_count"] }}</h2>
+            <small>High-risk findings</small>
         </div>
 
-
         <div class="stat-card">
-
-            <p>🟠 Medium Severity</p>
-
-            <h2 class="orange">
-                {{ summary["medium_count"] }}
-            </h2>
-
+            <p>Medium Severity</p>
+            <h2>{{ summary["medium_count"] }}</h2>
+            <small>Moderate-risk findings</small>
         </div>
 
-
         <div class="stat-card">
-
-            <p>🟢 Low Severity</p>
-
-            <h2 class="teal">
-                {{ summary["low_count"] }}
-            </h2>
-
+            <p>Low Severity</p>
+            <h2>{{ summary["low_count"] }}</h2>
+            <small>Low-risk findings</small>
         </div>
+    </section>
 
+    <!-- Severity Distribution -->
+    <section class="section-card">
+        <h2 class="section-title">Vulnerability Distribution</h2>
 
-    </div>
-
-
-    <!-- SEVERITY DISTRIBUTION -->
-
-    <div class="section">
-
-        <h2>📊 Vulnerability Distribution</h2>
-
-        {% if summary["total_vulnerabilities"] > 0 %}
-
-
-            <div class="chart-item">
-
-                <div class="chart-label">
-
-                    <span>High Severity</span>
-
-                    <span>
-                        {{ summary["high_count"] }}
-                        ({{ high_pct }}%)
-                    </span>
-
-                </div>
-
-                <div class="progress">
-
-                    <div
-                        class="bar high-bar"
-                        style="width: {{ high_pct }}%;"
-                    ></div>
-
-                </div>
-
+        <div class="severity-item">
+            <div class="severity-info">
+                <span>High Severity</span>
+                <span>{{ summary["high_count"] }} ({{ high_pct }}%)</span>
             </div>
-
-
-            <div class="chart-item">
-
-                <div class="chart-label">
-
-                    <span>Medium Severity</span>
-
-                    <span>
-                        {{ summary["medium_count"] }}
-                        ({{ medium_pct }}%)
-                    </span>
-
-                </div>
-
-                <div class="progress">
-
-                    <div
-                        class="bar medium-bar"
-                        style="width: {{ medium_pct }}%;"
-                    ></div>
-
-                </div>
-
+            <div class="progress-track">
+                <div class="progress-fill high" style="width: {{ high_pct }}%;"></div>
             </div>
+        </div>
 
-
-            <div class="chart-item">
-
-                <div class="chart-label">
-
-                    <span>Low Severity</span>
-
-                    <span>
-                        {{ summary["low_count"] }}
-                        ({{ low_pct }}%)
-                    </span>
-
-                </div>
-
-                <div class="progress">
-
-                    <div
-                        class="bar low-bar"
-                        style="width: {{ low_pct }}%;"
-                    ></div>
-
-                </div>
-
+        <div class="severity-item">
+            <div class="severity-info">
+                <span>Medium Severity</span>
+                <span>{{ summary["medium_count"] }} ({{ medium_pct }}%)</span>
             </div>
+            <div class="progress-track">
+                <div class="progress-fill medium" style="width: {{ medium_pct }}%;"></div>
+            </div>
+        </div>
 
+        <div class="severity-item">
+            <div class="severity-info">
+                <span>Low Severity</span>
+                <span>{{ summary["low_count"] }} ({{ low_pct }}%)</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill low" style="width: {{ low_pct }}%;"></div>
+            </div>
+        </div>
+    </section>
 
-        {% else %}
-
-            <p class="empty">
-                No vulnerabilities have been detected yet.
-            </p>
-
-        {% endif %}
-
-    </div>
-
-
-    <!-- RECENT SCANS -->
-
-    <div class="section">
-
-        <h2>🕒 Recent Scan Activity</h2>
+    <!-- Recent Scans -->
+    <section class="section-card">
+        <h2 class="section-title">Recent Scans</h2>
 
         {% if recent_scans %}
-
         <div class="table-wrapper">
-
             <table>
-
                 <thead>
-
                     <tr>
-
                         <th>Scan ID</th>
-
-                        <th>File Name</th>
-
+                        <th>Filename</th>
                         <th>Date</th>
-
-                        <th>Total Issues</th>
-
+                        <th>Issues Found</th>
                         <th>Action</th>
-
                     </tr>
-
                 </thead>
-
-
                 <tbody>
-
                     {% for scan in recent_scans %}
-
                     <tr>
-
-                        <td>{{ scan["id"] }}</td>
-
-                        <td>{{ scan["filename"] }}</td>
-
+                        <td>#{{ scan["id"] }}</td>
+                        <td>{{ scan["filename"] or "Pasted Code" }}</td>
                         <td>{{ scan["scanned_at"] }}</td>
-
                         <td>{{ scan["total_issues"] }}</td>
-
                         <td>
-
-                            <a
-                                href="{{ url_for('scan_details', scan_id=scan['id']) }}"
-                                class="view-button"
-                            >
-                                View
-                            </a>
-
+                            <a class="view-btn" href="{{ url_for('scan_details', scan_id=scan['id']) }}">View</a>
                         </td>
-
                     </tr>
-
                     {% endfor %}
-
                 </tbody>
-
             </table>
-
         </div>
-
         {% else %}
-
-            <p class="empty">
-                No scans available. Upload and scan a Python file first.
-            </p>
-
+        <div class="empty-state">
+            <p>No scans available yet.</p>
+            <p>Run your first Python security scan to see analytics here.</p>
+        </div>
         {% endif %}
+    </section>
 
-    </div>
+    <a href="{{ url_for('home') }}" class="back-btn">Back to Scanner</a>
 
-
-    <a href="{{ url_for('home') }}" class="back-button">
-        ← Back to Scanner
-    </a>
-
-
-</div>
-
+</main>
 
 <footer>
-
-    CodeGuard © 2026 | Python Code Security Analyzer
-
+    CodeGuard — Python Security Scanner
 </footer>
 
-
 </body>
-
 </html>
