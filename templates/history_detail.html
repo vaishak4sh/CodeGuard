@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CodeGuard - Scan Details</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0b1020;
+            color: white;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #11182b;
+            padding: 22px 7%;
+            border-bottom: 1px solid #26314c;
+        }
+
+        .logo {
+            color: #55d6be;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 86%;
+            max-width: 1000px;
+            margin: 45px auto;
+        }
+
+        .card {
+            background: #151f35;
+            border: 1px solid #2a3857;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 22px;
+        }
+
+        h1, h2 {
+            margin-bottom: 18px;
+        }
+
+        p {
+            color: #c5cde0;
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 22px;
+        }
+
+        .stat {
+            background: #10192b;
+            padding: 20px;
+            border: 1px solid #2a3857;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat h3 {
+            font-size: 27px;
+        }
+
+        .high {
+            color: #ff647c;
+        }
+
+        .medium {
+            color: #ffbc55;
+        }
+
+        .low {
+            color: #55d6be;
+        }
+
+        .issue {
+            background: #10192b;
+            border: 1px solid #2a3857;
+            padding: 20px;
+            margin-top: 18px;
+            border-radius: 8px;
+        }
+
+        .issue h3 {
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .recommendation {
+            background: #182840;
+            border-left: 4px solid #55d6be;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 7px;
+        }
+
+        .recommendation h4 {
+            color: #55d6be;
+            margin-bottom: 15px;
+            font-size: 17px;
+        }
+
+        .recommendation p {
+            color: #d4dcec;
+            margin: 12px 0;
+        }
+
+        pre {
+            background: #090e1b;
+            color: #55d6be;
+            padding: 15px;
+            border-radius: 7px;
+            border: 1px solid #354362;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .note {
+            color: #ffbc55 !important;
+            font-size: 13px;
+        }
+
+        .clean {
+            color: #55d6be;
+            padding: 20px 0;
+        }
+
+        a {
+            color: #55d6be;
+            text-decoration: none;
+        }
+
+        .back {
+            display: inline-block;
+            background: #55d6be;
+            color: #091521;
+            padding: 12px 20px;
+            border-radius: 7px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #78859e;
+        }
+
+        @media(max-width: 650px) {
+            .container {
+                width: 92%;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🛡 CodeGuard</div>
+</header>
+
+<div class="container">
+
+    <!-- SCAN INFORMATION -->
+
+    <div class="card">
+
+        <h1>📊 Scan Details</h1>
+
+        <p>
+            <strong>Scan ID:</strong>
+            {{ scan["id"] }}
+        </p>
+
+        <p>
+            <strong>File Name:</strong>
+            {{ scan["filename"] }}
+        </p>
+
+        <p>
+            <strong>Scan Date:</strong>
+            {{ scan["scanned_at"] }}
+        </p>
+
+        <p>
+            <strong>Total Issues:</strong>
+            {{ scan["total_issues"] }}
+        </p>
+
+        <div class="stats">
+
+            <div class="stat">
+                <h3 class="high">
+                    {{ scan["high_count"] }}
+                </h3>
+                <p>High Severity</p>
+            </div>
+
+            <div class="stat">
+                <h3 class="medium">
+                    {{ scan["medium_count"] }}
+                </h3>
+                <p>Medium Severity</p>
+            </div>
+
+            <div class="stat">
+                <h3 class="low">
+                    {{ scan["low_count"] }}
+                </h3>
+                <p>Low Severity</p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- VULNERABILITY DETAILS -->
+
+    <div class="card">
+
+        <h2>🛡️ Security Analysis</h2>
+
+        {% if recommendations %}
+
+            {% for item in recommendations %}
+
+                <div class="issue">
+
+                    <h3>
+                        {{ item.test_id }} -
+                        {{ item.issue_text }}
+                    </h3>
+
+                    <p>
+                        <strong>Severity:</strong>
+                        {{ item.issue_severity }}
+                    </p>
+
+                    <p>
+                        <strong>Confidence:</strong>
+                        {{ item.issue_confidence }}
+                    </p>
+
+                    <p>
+                        <strong>Line Number:</strong>
+                        {{ item.line_number }}
+                    </p>
+
+
+                    <!-- RECOMMENDATIONS -->
+
+                    <div class="recommendation">
+
+                        <h4>
+                            💡 {{ item.title }}
+                        </h4>
+
+                        <p>
+                            <strong>Why is this dangerous?</strong>
+                            <br>
+                            {{ item.why }}
+                        </p>
+
+                        <p>
+                            <strong>How to fix it?</strong>
+                            <br>
+                            {{ item.fix }}
+                        </p>
+
+                        <p>
+                            <strong>Safer code example:</strong>
+                        </p>
+
+                        <pre>{{ item.example }}</pre>
+
+                        <p class="note">
+                            <strong>Important:</strong>
+                            {{ item.note }}
+                        </p>
+
+                    </div>
+
+
+                    {% if item.more_info %}
+
+                        <p>
+                            <a href="{{ item.more_info }}"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                View Bandit Documentation
+                            </a>
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <h3 class="clean">
+                ✅ No security issues detected!
+            </h3>
+
+            <p>
+                No vulnerabilities were recorded for this scan.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <a href="{{ url_for('scan_history') }}" class="back">
+        ← Back to Scan History
+    </a>
+
+    <br>
+
+    <a href="{{ url_for('home') }}" class="back">
+        🏠 Back to Home
+    </a>
+
+</div>
+
+<footer>
+    CodeGuard © 2026 | Python Code Security Analyzer
+</footer>
+
+</body>
+</html>

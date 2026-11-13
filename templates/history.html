@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CodeGuard - Scan History</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0b1020;
+            color: white;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 7%;
+            background: #11182b;
+            border-bottom: 1px solid #26314c;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+            color: #55d6be;
+        }
+
+        header a {
+            color: #55d6be;
+            text-decoration: none;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 50px auto;
+        }
+
+        h1 {
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #aab4ca;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #151f35;
+            border: 1px solid #2a3857;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .total {
+            color: #55d6be;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th, td {
+            padding: 16px 12px;
+            text-align: left;
+            border-bottom: 1px solid #2a3857;
+        }
+
+        th {
+            color: #55d6be;
+        }
+
+        td {
+            color: #d4dcec;
+            font-size: 14px;
+        }
+
+        .high {
+            color: #ff647c;
+        }
+
+        .medium {
+            color: #ffbc55;
+        }
+
+        .low {
+            color: #55d6be;
+        }
+
+        .details {
+            background: #55d6be;
+            color: #091521;
+            padding: 9px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .empty {
+            color: #aab4ca;
+            text-align: center;
+            padding: 35px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 25px;
+            color: #55d6be;
+            text-decoration: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #78859e;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">🛡 CodeGuard</div>
+
+    <a href="/">Home</a>
+
+</header>
+
+
+<div class="container">
+
+    <h1>📚 Scan History</h1>
+
+    <p class="subtitle">
+        View your previous Python security scans.
+    </p>
+
+
+    <div class="card">
+
+        <div class="total">
+            Total Scans: {{ scans|length }}
+        </div>
+
+        {% if scans %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>File Name</th>
+                        <th>Date</th>
+                        <th>High</th>
+                        <th>Medium</th>
+                        <th>Low</th>
+                        <th>Details</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for scan in scans %}
+
+                    <tr>
+
+                        <td>{{ scan["id"] }}</td>
+
+                        <td>{{ scan["filename"] }}</td>
+
+                        <td>{{ scan["scanned_at"] }}</td>
+
+                        <td class="high">
+                            {{ scan["high_count"] }}
+                        </td>
+
+                        <td class="medium">
+                            {{ scan["medium_count"] }}
+                        </td>
+
+                        <td class="low">
+                            {{ scan["low_count"] }}
+                        </td>
+
+                        <td>
+
+                            <a
+                                class="details"
+                                href="{{ url_for('scan_details', scan_id=scan['id']) }}"
+                            >
+                                View
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+
+            <h3>No Scan History Found</h3>
+
+            <p>Upload and scan a Python file to see your history here.</p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <a href="/" class="back">← Back to Scanner</a>
+
+</div>
+
+
+<footer>
+
+    CodeGuard © 2026 | Python Code Security Analyzer
+
+</footer>
+
+</body>
+
+</html>

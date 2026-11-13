@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CodeGuard - Python Security Scanner</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0b1020;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 7%;
+            background: #11182b;
+            border-bottom: 1px solid #26314c;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+            color: #55d6be;
+        }
+
+        nav a {
+            color: #c5cde0;
+            text-decoration: none;
+            margin-left: 22px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: #55d6be;
+        }
+
+        /* HERO */
+
+        .hero {
+            text-align: center;
+            padding: 65px 20px 35px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 span {
+            color: #55d6be;
+        }
+
+        .hero p {
+            color: #aab4ca;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* MAIN CONTAINER */
+
+        .container {
+            width: 86%;
+            max-width: 1100px;
+            margin: 25px auto;
+        }
+
+        .card {
+            background: #151f35;
+            border: 1px solid #2a3857;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            font-size: 21px;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #aab4ca;
+            margin-bottom: 18px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* CODE TEXTAREA */
+
+        textarea {
+            width: 100%;
+            height: 260px;
+            background: #090e1b;
+            color: #55d6be;
+            border: 1px solid #354362;
+            border-radius: 8px;
+            padding: 18px;
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            border-color: #55d6be;
+        }
+
+        /* UPLOAD */
+
+        .upload {
+            margin-top: 18px;
+            color: #aab4ca;
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+        }
+
+        /* BUTTONS */
+
+        button {
+            background: #55d6be;
+            color: #091521;
+            border: none;
+            padding: 13px 28px;
+            border-radius: 7px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: #36bba5;
+        }
+
+        /* ERROR MESSAGE */
+
+        .error {
+            background: #4b202b;
+            color: #ffb6c1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* SUCCESS MESSAGE */
+
+        .success {
+            background: #12372f;
+            color: #55d6be;
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* SEVERITY STATISTICS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #151f35;
+            padding: 22px;
+            border-radius: 10px;
+            border: 1px solid #2a3857;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card p {
+            color: #aab4ca;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        .high {
+            color: #ff647c;
+        }
+
+        .medium {
+            color: #ffbc55;
+        }
+
+        .low {
+            color: #55d6be;
+        }
+
+        /* VULNERABILITY CARD */
+
+        .issue {
+            background: #10192b;
+            border: 1px solid #2a3857;
+            padding: 20px;
+            margin-top: 18px;
+            border-radius: 8px;
+        }
+
+        .issue h3 {
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .issue p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        /* SECURITY RECOMMENDATIONS */
+
+        .recommendation {
+            background: #182840;
+            border-left: 4px solid #55d6be;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 7px;
+        }
+
+        .recommendation h4 {
+            color: #55d6be;
+            font-size: 17px;
+            margin-bottom: 15px;
+        }
+
+        .recommendation p {
+            color: #d4dcec;
+            margin: 12px 0;
+            line-height: 1.7;
+        }
+
+        /* CODE EXAMPLE */
+
+        .recommendation pre {
+            background: #090e1b;
+            color: #55d6be;
+            border: 1px solid #354362;
+            border-radius: 7px;
+            padding: 16px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* RECOMMENDATION NOTE */
+
+        .recommendation .note {
+            color: #ffbc55;
+            font-size: 13px;
+        }
+
+        /* CLEAN SCAN */
+
+        .clean {
+            color: #55d6be;
+            padding: 20px 0;
+        }
+
+        /* ACTION BUTTONS */
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .history-button {
+            display: inline-block;
+            background: #55d6be;
+            color: #091521;
+            padding: 13px 20px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .history-button:hover {
+            background: #36bba5;
+        }
+
+        /* HIDDEN REPORT FIELD */
+
+        .action-buttons textarea[hidden] {
+            display: none;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #78859e;
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        @media(max-width: 650px) {
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav a {
+                margin: 0 7px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================================= -->
+<!-- HEADER -->
+<!-- ================================= -->
+
+<header>
+
+    <div class="logo">
+        🛡 CodeGuard
+    </div>
+<nav>
+    <a href="/">Home</a>
+
+    <a href="#scanner">Scanner</a>
+
+    <a href="#results">Results</a>
+
+    <a href="{{ url_for('analytics') }}">📊 Analytics</a>
+
+    <a href="{{ url_for('scan_history') }}">📚 History</a>
+</nav>
+   
+
+</header>
+
+
+<!-- ================================= -->
+<!-- HERO SECTION -->
+<!-- ================================= -->
+
+<section class="hero">
+
+    <h1>
+        Secure Your Code With <span>CodeGuard</span>
+    </h1>
+
+    <p>
+        Analyze Python code, detect security vulnerabilities
+        and identify risky coding practices.
+    </p>
+
+</section>
+
+
+<div class="container">
+
+
+    <!-- ================================= -->
+    <!-- ERROR MESSAGE -->
+    <!-- ================================= -->
+
+    {% if error %}
+
+        <div class="error">
+
+            {{ error }}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- ================================= -->
+    <!-- CODE SCANNER -->
+    <!-- ================================= -->
+
+    <section class="card" id="scanner">
+
+        <h2>⚡ Code Security Scanner</h2>
+
+        <p>
+            Paste your Python code below or upload a .py file
+            to check for security vulnerabilities.
+        </p>
+
+
+        <form
+            method="POST"
+            action="/"
+            enctype="multipart/form-data"
+        >
+
+            <textarea
+                name="code"
+                placeholder="Paste your Python code here..."
+            >{{ code }}</textarea>
+
+
+            <div class="upload">
+
+                <label>
+                    Or upload Python file:
+                </label>
+
+                <br>
+
+                <input
+                    type="file"
+                    name="code_file"
+                    accept=".py"
+                >
+
+            </div>
+
+
+            <button type="submit">
+
+                🔍 Scan My Code
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- ================================= -->
+    <!-- SECURITY SCAN RESULTS -->
+    <!-- ================================= -->
+
+    {% if scan_ran %}
+
+    <section id="results">
+
+        <div class="card">
+
+            <h2>
+                📊 Security Scan Results
+            </h2>
+
+            <p>
+                Here is the security analysis of your code.
+            </p>
+
+
+            <!-- SEVERITY STATISTICS -->
+
+            <div class="stats">
+
+
+                <!-- HIGH -->
+
+                <div class="stat-card">
+
+                    <h3 class="high">
+                        {{ counts.HIGH }}
+                    </h3>
+
+                    <p>
+                        High Severity
+                    </p>
+
+                </div>
+
+
+                <!-- MEDIUM -->
+
+                <div class="stat-card">
+
+                    <h3 class="medium">
+                        {{ counts.MEDIUM }}
+                    </h3>
+
+                    <p>
+                        Medium Severity
+                    </p>
+
+                </div>
+
+
+                <!-- LOW -->
+
+                <div class="stat-card">
+
+                    <h3 class="low">
+                        {{ counts.LOW }}
+                    </h3>
+
+                    <p>
+                        Low Severity
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- SECURITY RECOMMENDATIONS -->
+            <!-- ================================= -->
+
+            {% if recommendations %}
+
+                <h2>
+                    🛡️ Detected Vulnerabilities
+                </h2>
+
+
+                {% for item in recommendations %}
+
+
+                    <div class="issue">
+
+
+                        <!-- VULNERABILITY INFORMATION -->
+
+                        <h3>
+
+                            {{ item.test_id }} -
+                            {{ item.issue_text }}
+
+                        </h3>
+
+
+                        <p>
+
+                            <strong>Severity:</strong>
+
+                            <span class="{{ item.issue_severity | lower }}">
+
+                                {{ item.issue_severity }}
+
+                            </span>
+
+                        </p>
+
+
+                        <p>
+
+                            <strong>Confidence:</strong>
+
+                            {{ item.issue_confidence }}
+
+                        </p>
+
+
+                        <p>
+
+                            <strong>Line Number:</strong>
+
+                            {{ item.line_number }}
+
+                        </p>
+
+
+                        <!-- ================================= -->
+                        <!-- RECOMMENDATION DETAILS -->
+                        <!-- ================================= -->
+
+                        <div class="recommendation">
+
+
+                            <h4>
+
+                                💡 {{ item.title }}
+
+                            </h4>
+
+
+                            <!-- WHY DANGEROUS -->
+
+                            <p>
+
+                                <strong>
+                                    Why is this dangerous?
+                                </strong>
+
+                                <br>
+
+                                {{ item.why }}
+
+                            </p>
+
+
+                            <!-- HOW TO FIX -->
+
+                            <p>
+
+                                <strong>
+                                    How to fix it?
+                                </strong>
+
+                                <br>
+
+                                {{ item.fix }}
+
+                            </p>
+
+
+                            <!-- SAFE CODE EXAMPLE -->
+
+                            <p>
+
+                                <strong>
+                                    Safer code example:
+                                </strong>
+
+                            </p>
+
+
+                            <pre>{{ item.example }}</pre>
+
+
+                            <!-- IMPORTANT NOTE -->
+
+                            <p class="note">
+
+                                <strong>
+                                    Important:
+                                </strong>
+
+                                {{ item.note }}
+
+                            </p>
+
+
+                        </div>
+
+
+                        <!-- BANDIT DOCUMENTATION -->
+
+                        {% if item.more_info %}
+
+                            <p style="margin-top:15px;">
+
+                                <a
+                                    href="{{ item.more_info }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style="color:#55d6be;"
+                                >
+
+                                    View Bandit Documentation
+
+                                </a>
+
+                            </p>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            {% else %}
+
+
+                <h3 class="clean">
+
+                    ✅ No security issues detected!
+
+                </h3>
+
+
+                <p>
+
+                    Bandit did not identify any security issues
+                    in the submitted code.
+
+                </p>
+
+
+            {% endif %}
+
+
+            <!-- ================================= -->
+            <!-- HISTORY SAVE STATUS -->
+            <!-- ================================= -->
+
+            {% if history_saved %}
+
+                <div class="success">
+
+                    ✅ Scan successfully saved to history!
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- ================================= -->
+            <!-- ACTION BUTTONS -->
+            <!-- ================================= -->
+
+            <div class="action-buttons">
+
+
+                <!-- DOWNLOAD REPORT -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for('download_report') }}"
+                >
+
+                    <textarea
+                        name="code"
+                        hidden
+                        style="display:none;"
+                    >{{ code }}</textarea>
+
+
+                    <button type="submit">
+
+                        ⬇️ Download Security Report
+
+                    </button>
+
+                </form>
+
+
+                <!-- VIEW HISTORY -->
+
+                <a
+                    href="{{ url_for('scan_history') }}"
+                    class="history-button"
+                >
+
+                    📚 View Scan History
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- ================================= -->
+<!-- FOOTER -->
+<!-- ================================= -->
+
+<footer>
+
+    CodeGuard © 2026 | Python Code Security Analyzer
+
+</footer>
+
+
+</body>
+
+</html>
